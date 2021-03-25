@@ -8,7 +8,7 @@
     "lint": "eslint \"./src/**/*.{js,ts,tsx}\"",
     "lint:fix": "yarn lint --quiet --fix",
     "types": "tsc --noEmit -p .",
-    "types:watch": "tsc --noEmit -p . --watch",
+    "types:watch": "yarn types --watch",
     "validate": "yarn types && yarn lint"
   },
   "dependencies": {
