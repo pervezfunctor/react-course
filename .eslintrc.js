@@ -1,6 +1,9 @@
 const restrictedGlobals = require('confusing-browser-globals')
 
 module.exports = {
+  globals: {
+    JSX: true,
+  },
   env: {
     browser: true,
     node: true,
@@ -259,6 +262,11 @@ module.exports = {
         },
       },
     ],
+    '@typescript-eslint/explicit-function-return-type': [
+      'error',
+      { allowExpressions: true },
+    ],
+
     '@typescript-eslint/typedef': ['error', { arrowParameter: false }],
     '@typescript-eslint/naming-convention': [
       'error',
