@@ -119,7 +119,6 @@ export function fake<T extends Mixed>(
   }
 
   if (spec instanceof NullType) {
-    // eslint-disable-next-line no-null/no-null
     return null
   }
 
