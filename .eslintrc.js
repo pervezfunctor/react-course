@@ -35,7 +35,9 @@ module.exports = {
     react: { version: 'detect' },
   },
   rules: {
+    'default-case': 'off',
     'no-redeclare': 'off',
+    '@typescript-eslint/switch-exhaustiveness-check': 'error',
     '@typescript-eslint/adjacent-overload-signatures': 'error',
     '@typescript-eslint/await-thenable': 'error',
     '@typescript-eslint/consistent-type-assertions': 'error',
@@ -86,7 +88,7 @@ module.exports = {
     'default-case': ['error', { commentPattern: '^no default$' }],
     'dot-location': ['error', 'property'],
     'eol-last': 'off',
-    'functional/immutable-data': 'error',
+    'functional/immutable-data': ['error',{assumeTypes: true, ignoreImmediateMutation: false, ignorePattern: "^draft"},
     'functional/no-class': 'error',
     'functional/no-let': 'error',
     'functional/no-this-expression': 'error',
