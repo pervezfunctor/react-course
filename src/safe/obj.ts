@@ -1,3 +1,7 @@
+/* eslint-disable functional/no-this-expression */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable functional/no-class */
+/* eslint-disable functional/prefer-readonly-type */
 import {
   exact,
   ExactC,
@@ -13,8 +17,6 @@ import {
   TypeC,
 } from 'io-ts'
 import { keys } from './common'
-
-/* eslint-disable */
 
 type ObjSpec<Opt extends Props, Req extends Props> = IntersectionC<
   [PartialC<Opt>, TypeC<Req>]
@@ -66,6 +68,7 @@ export function isExactObj(spec: Mixed): spec is AnyObj {
   return spec instanceof ObjType && spec.spec instanceof ExactType
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ObjC<Opt extends Props, Req extends Props>
   extends ObjType<
     Opt,

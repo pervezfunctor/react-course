@@ -1,7 +1,6 @@
 import { failure, identity, string, success, Type } from 'io-ts'
 
-/* eslint-disable */
-
+// eslint-disable-next-line functional/no-class
 export class EnumType<D extends readonly string[], A> extends Type<A> {
   readonly _tag: 'EnumType' = 'EnumType'
 
@@ -16,6 +15,7 @@ export class EnumType<D extends readonly string[], A> extends Type<A> {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface EnumC<D extends readonly string[]>
   extends EnumType<D, D[number]> {}
 
@@ -23,9 +23,7 @@ export function enums<T extends readonly string[]>(
   name: string | undefined,
   ...keys: T
 ): EnumC<T> {
-  function is(u: unknown): u is T[number] {
-    return string.is(u) && keys.includes(u)
-  }
+  const is = (u: unknown): u is T[number] => string.is(u) && keys.includes(u)
 
   return new EnumType(
     keys,
@@ -36,6 +34,7 @@ export function enums<T extends readonly string[]>(
   )
 }
 
+// eslint-disable-next-line functional/prefer-readonly-type
 export function enumerate<T extends string[]>(...keys: T): EnumC<T> {
   return enums(undefined, ...keys)
 }

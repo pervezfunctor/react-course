@@ -1,7 +1,6 @@
+/* eslint-disable functional/prefer-readonly-type */
 import { Mixed, tuple, TupleC, TypeOf } from 'io-ts'
 import { assertCast } from './iotsUtils'
-
-/* eslint-disable */
 
 // TODO: revisit replacing tuple once ts 3.7 releases with circular references support
 
