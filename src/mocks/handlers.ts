@@ -32,11 +32,15 @@ export const handlers = [
     const params: Query = { ...defaultQuery, ...cast(Query, reqParams) }
 
     const users =
-      params.page < 500
+      params.page < 50
         ? fakeUsers(params.perPage)
         : fakeUsers(Math.floor(params.perPage / 2))
 
     console.log({ usersLength: users.length })
-    return res(ctx.status(200), ctx.json(users))
+    return res(
+      ctx.status(200),
+      ctx.delay(Math.floor(Math.random() * 1000)),
+      ctx.json(users),
+    )
   }),
 ]
