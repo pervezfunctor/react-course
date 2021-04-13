@@ -126,31 +126,27 @@ export const ReactBaseTableEx: React.FC = () => {
   //     )
   // }
 
-  const { isEndReached, loadMore, isLoading, flattened: data } = useInfinite(
-    '/users',
-    perPage,
-  )
-
-  const handleEndReached = async () => {
-    if (isEndReached) {
-      return
-    }
-    await loadMore()
-  }
+  const {
+    isEndReached,
+    loadMore,
+    isValidating,
+    isInitialLoading,
+    flattened: data,
+  } = useInfinite('/users', perPage)
 
   const renderFooter = () => {
-    if (isEndReached) {
-      return null
+    if (isValidating) {
+      return (
+        <Footer>
+          <Loader />
+        </Footer>
+      )
     }
-    return (
-      <Footer>
-        <Loader />
-      </Footer>
-    )
+    return null
   }
 
   const renderEmpty = () => {
-    if (isLoading) {
+    if (isInitialLoading) {
       return (
         <Empty>
           <Loader />
@@ -178,10 +174,9 @@ export const ReactBaseTableEx: React.FC = () => {
               fixed
               columns={columns}
               data={data}
-              disabled={isLoading}
-              footerHeight={isEndReached ? 0 : 50}
-              onEndReachedThreshold={300}
-              onEndReached={handleEndReached}
+              disabled={isInitialLoading}
+              onEndReached={loadMore}
+              footerHeight={50}
               footerRenderer={renderFooter}
               emptyRenderer={renderEmpty}
             />
