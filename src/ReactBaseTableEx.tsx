@@ -12,17 +12,17 @@ import React from 'react'
 import Table, { AutoResizer } from 'react-base-table'
 import 'react-base-table/styles.css'
 import styled, { keyframes } from 'styled-components'
-import { fakeUserColumns, fakeUsers } from './fakeData'
-import type { User } from './types'
+import { fakeUserColumns } from './fakeData'
+import { useInfinite } from './useInfinite'
 
-const TOTAL_SIZE = 1005
-const PAGE_SIZE = 200
+// const TOTAL_SIZE = 1005
+// const PAGE_SIZE = 200
 
 const columns = fakeUserColumns()
-const DATA = fakeUsers(TOTAL_SIZE)
+// const DATA = fakeUsers(TOTAL_SIZE)
 
-const delay = async (ms: number) =>
-  new Promise(resolve => setTimeout(resolve, ms))
+// const delay = async (ms: number) =>
+//   new Promise(resolve => setTimeout(resolve, ms))
 
 const Empty = styled.div`
   height: 100%;
@@ -67,74 +67,79 @@ const Footer = styled.div`
   height: 100%;
 `
 
-interface ReactBaseTableExState {
-  readonly data: User[]
-  readonly loading: boolean
-  readonly loadingMore: boolean
-  readonly loadedAll: boolean
-}
+// interface ReactBaseTableExState {
+//   readonly data: User[]
+//   readonly loading: boolean
+//   readonly loadingMore: boolean
+//   readonly loadedAll: boolean
+// }
 
-const fetchData = async (offset = 0, limit = PAGE_SIZE) =>
-  delay(3000).then(() => DATA.slice(offset, offset + limit))
+// const fetchData = async (offset = 0, limit = PAGE_SIZE) =>
+//   delay(3000).then(() => DATA.slice(offset, offset + limit))
 
+const perPage = 100
 export const ReactBaseTableEx: React.FC = () => {
-  const [state, setState] = React.useState<ReactBaseTableExState>({
-    data: [],
-    loading: true,
-    loadingMore: false,
-    loadedAll: false,
-  })
+  // const [state, setState] = React.useState<ReactBaseTableExState>({
+  //   data: [],
+  //   loading: true,
+  //   loadingMore: false,
+  //   loadedAll: false,
+  // })
 
-  const isMounted = React.useRef(false)
+  // const isMounted = React.useRef(false)
 
-  const loadData = () => {
-    fetchData(0, Math.random() < 0.2 ? 0 : PAGE_SIZE)
-      .then(data => {
-        if (!isMounted.current) {
-          return
-        }
-        setState(state => ({
-          ...state,
-          data,
-          loading: false,
-          loadedAll: data.length < PAGE_SIZE,
-        }))
-      })
-      .catch(err =>
-        console.log(`Failed to load data: ${JSON.stringify(err, null, 2)}`),
-      )
-  }
+  // const loadData = () => {
+  //   fetchData(0, Math.random() < 0.2 ? 0 : PAGE_SIZE)
+  //     .then(data => {
+  //       if (!isMounted.current) {
+  //         return
+  //       }
+  //       setState(state => ({
+  //         ...state,
+  //         data,
+  //         loading: false,
+  //         loadedAll: data.length < PAGE_SIZE,
+  //       }))
+  //     })
+  //     .catch(err =>
+  //       console.log(`Failed to load data: ${JSON.stringify(err, null, 2)}`),
+  //     )
+  // }
 
-  const loadMore = () => {
-    setState(state => ({ ...state, loadingMore: true }))
+  // const loadMore = () => {
+  //   setState(state => ({ ...state, loadingMore: true }))
 
-    fetchData(state.data.length)
-      .then(data => {
-        if (!isMounted.current) {
-          return
-        }
-        setState(state => ({
-          ...state,
-          data: [...state.data, ...data],
-          loadingMore: false,
-          loadedAll: data.length < PAGE_SIZE,
-        }))
-      })
-      .catch(err =>
-        console.log(`Failed to load more: ${JSON.stringify(err, null, 2)}`),
-      )
-  }
+  //   fetchData(state.data.length)
+  //     .then(data => {
+  //       if (!isMounted.current) {
+  //         return
+  //       }
+  //       setState(state => ({
+  //         ...state,
+  //         data: [...state.data, ...data],
+  //         loadingMore: false,
+  //         loadedAll: data.length < PAGE_SIZE,
+  //       }))
+  //     })
+  //     .catch(err =>
+  //       console.log(`Failed to load more: ${JSON.stringify(err, null, 2)}`),
+  //     )
+  // }
 
-  const handleEndReached = () => {
-    const { loading, loadingMore, loadedAll } = state
-    if (loading || loadingMore || loadedAll) {
+  const { isEndReached, loadMore, isLoading, flattened: data } = useInfinite(
+    '/users',
+    perPage,
+  )
+
+  const handleEndReached = async () => {
+    if (isEndReached) {
       return
     }
-    loadMore()
+    await loadMore()
   }
 
   const renderFooter = () => {
-    if (!state.loadingMore) {
+    if (isEndReached) {
       return null
     }
     return (
@@ -145,34 +150,24 @@ export const ReactBaseTableEx: React.FC = () => {
   }
 
   const renderEmpty = () => {
-    if (state.loading) {
+    if (isLoading) {
       return (
         <Empty>
           <Loader />
         </Empty>
       )
     }
-    if (state.data.length === 0) {
+    if (data.length === 0) {
       return <Empty>No data available</Empty>
     }
     return null
   }
 
-  React.useEffect(() => {
-    isMounted.current = true
-    loadData()
-    return () => {
-      isMounted.current = false
-    }
-  }, [])
-
-  const { data, loading, loadingMore, loadedAll } = state
-
   return (
     <>
       <Toolbar>
         <div>Loaded data length: {data.length}</div>
-        <div>All data loaded: {loadedAll.toString()}</div>
+        <div>All data loaded: {isEndReached?.toString()}</div>
       </Toolbar>
       <AutoResizer>
         {({ width, height }) => (
@@ -183,8 +178,8 @@ export const ReactBaseTableEx: React.FC = () => {
               fixed
               columns={columns}
               data={data}
-              disabled={loading}
-              footerHeight={loadingMore ? 50 : 0}
+              disabled={isLoading}
+              footerHeight={isEndReached ? 0 : 50}
               onEndReachedThreshold={300}
               onEndReached={handleEndReached}
               footerRenderer={renderFooter}
