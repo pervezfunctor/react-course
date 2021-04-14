@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-import { Container, Flex, Text } from '@chakra-ui/layout'
+import { Flex, Text } from '@chakra-ui/layout'
 import { chakra, keyframes } from '@chakra-ui/react'
 import React from 'react'
 import Table, { AutoResizer, ColumnShape } from 'react-base-table'
