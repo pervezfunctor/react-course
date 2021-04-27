@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable functional/no-let */
-/* eslint-disable @typescript-eslint/naming-convention */
 
 import React, { Dispatch, Reducer, ReducerAction, ReducerState } from 'react'
 import { verify } from './safe'
@@ -55,6 +54,7 @@ export function createStore<R extends Reducer<any, any>>(reducer: R) {
   }
 
   return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     Store,
     useStore,
     useSelect,
